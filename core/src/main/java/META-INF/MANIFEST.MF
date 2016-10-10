@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Main-Class: com.zerjioang.apkr.cli.ApkrScanner
+Entry-Point: com.zerjioang.apkr.cli.ApkrScanner
+Created-By: @zerjioang
+Application-Name: Apkr scanner
