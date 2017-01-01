@@ -1,0 +1,637 @@
+[1] "################################################"
+[1] "              INICIO DEL PROYECTO"
+[1] "################################################"
+[1] ""
+[1] ""
+[1] "\n  1. se obtiene un numero aleatorio que representa una columna (atributo) del dataset.\n  2. La columna seleccionada, se añade al modelo y se entrena. EL modelo en caso de estar vacio, será es columna solamente.\n  3. Se entrena el modelo compuesto por K columnas.\n  4. Se obtiene el indice de acierto del modelo y se compara con el indice de acierto del anterio modelo. En caso de ser el primer modelo que se genere,\n    El indice de acierto anterior será - 1.\n    Si el indice de acierto es mayor que el anterior, la columna seleccionada se añade como atributo.\n    De lo contrario, la columna seleccionada, no se añade como atributo y se descarta como seleccion para futuras iteraciones\n  5 .Repetir este proceso hasta que el modelo predictivo no mejore.\n"
+[1] "Iteration: "
+[1] 1
+[1] "Used columns: "
+NULL
+[1] "unused columns: "
+NULL
+[1] "Generating multiple columns dataframe for training..."
+NULL
+[1] "Seleccionando datos de partida para la siguiente iteracion usando una columna aleatoria..."
+[1] 181
+[1] "Unused column list for next iteration"
+NULL
+[1] "Iteration: "
+[1] 2
+[1] "Used columns: "
+[1] 181
+[1] "unused columns: "
+NULL
+[1] "Generating multiple columns dataframe for training..."
+    BATTERY_STATS
+1               0
+2               0
+3               0
+4               0
+5               0
+6               0
+7               0
+8               0
+9               0
+10              0
+11              1
+12              0
+13              0
+14              1
+15              0
+16              0
+17              0
+18              0
+19              0
+20              0
+21              0
+22              0
+23              1
+24              0
+25              0
+26              0
+27              0
+28              1
+29              0
+30              0
+31              0
+32              0
+33              1
+34              0
+35              0
+36              0
+37              0
+38              0
+39              0
+40              0
+41              0
+42              1
+43              1
+44              1
+45              0
+46              0
+47              0
+48              0
+49              0
+50              0
+51              1
+52              0
+53              0
+54              0
+55              0
+56              0
+57              0
+58              0
+59              0
+60              0
+61              0
+62              0
+63              0
+64              0
+65              0
+66              0
+67              0
+68              0
+69              0
+70              0
+71              0
+72              0
+73              0
+74              0
+75              0
+76              0
+77              0
+78              0
+79              0
+80              0
+81              0
+82              0
+83              0
+84              0
+85              0
+86              0
+87              0
+88              0
+89              0
+90              1
+91              1
+92              0
+93              0
+94              0
+95              0
+96              0
+97              0
+98              0
+99              0
+100             0
+101             0
+102             0
+103             0
+104             0
+105             0
+106             1
+107             0
+108             0
+109             0
+110             0
+111             0
+112             0
+113             0
+114             0
+115             0
+116             0
+117             0
+118             0
+119             0
+120             0
+121             0
+122             0
+123             0
+124             0
+125             0
+126             0
+127             0
+128             0
+129             0
+130             0
+131             0
+132             0
+133             0
+134             0
+135             0
+136             0
+137             0
+138             0
+139             0
+140             0
+141             0
+142             0
+143             0
+144             0
+145             0
+146             0
+147             0
+148             0
+149             0
+150             0
+151             0
+152             0
+153             0
+154             0
+155             0
+156             0
+157             0
+158             0
+159             0
+160             0
+161             0
+162             0
+163             0
+164             0
+165             0
+166             0
+167             0
+168             0
+169             0
+170             0
+171             0
+172             0
+173             0
+174             0
+175             0
+176             0
+177             0
+178             0
+179             0
+180             0
+181             0
+182             0
+183             0
+184             0
+185             0
+186             0
+187             0
+188             0
+189             0
+190             0
+191             0
+192             0
+193             0
+194             0
+195             0
+196             0
+197             0
+198             0
+199             0
+200             0
+201             0
+202             0
+203             0
+204             0
+205             0
+206             0
+207             1
+208             0
+209             0
+210             0
+211             0
+212             0
+213             0
+214             0
+215             0
+216             0
+217             0
+218             0
+219             0
+220             0
+221             0
+222             0
+223             0
+224             0
+225             0
+226             0
+227             0
+228             0
+229             0
+230             0
+231             0
+232             0
+233             0
+234             0
+235             0
+236             0
+237             0
+238             0
+239             0
+240             0
+241             0
+242             0
+243             0
+244             0
+245             0
+246             0
+247             0
+248             0
+249             0
+250             0
+251             0
+252             0
+253             0
+254             0
+255             0
+256             0
+257             0
+258             0
+259             0
+260             0
+261             0
+262             0
+263             0
+264             0
+265             0
+266             0
+
+Naive Bayes Classifier for Discrete Predictors
+
+Call:
+naiveBayes.default(x = thisIterationTrainingModel, y = thisIterationTrainingLabels, 
+    laplace = 0)
+
+A-priori probabilities:
+thisIterationTrainingLabels
+ GOODWARE   MALWARE 
+0.7443609 0.2556391 
+
+Conditional probabilities:
+                           BATTERY_STATS
+thisIterationTrainingLabels       [,1]      [,2]
+                   GOODWARE 0.06060606 0.2392111
+                   MALWARE  0.01470588 0.1212678
+
+[1] "Results: Confusion Matrix"
+                testing_set_labels
+bayesResultModel  GOODWARE  MALWARE
+        GOODWARE        85       25
+        MALWARE          0        0
+[1] "This iteration model accuracy"
+[1] 0.7727273
+[1] "Previous iteration model accuracy"
+[1] -1
+[1] "Is better model than previous one?"
+[1] TRUE
+[1] 8
+[1] "Unused column list for next iteration"
+NULL
+[1] "Iteration: "
+[1] 3
+[1] "Used columns: "
+[1] 181   8
+[1] "unused columns: "
+NULL
+[1] "Generating multiple columns dataframe for training..."
+    BATTERY_STATS READ_SMS
+1               0        0
+2               0        0
+3               0        0
+4               0        0
+5               0        0
+6               0        0
+7               0        0
+8               0        0
+9               0        0
+10              0        0
+11              1        0
+12              0        0
+13              0        0
+14              1        0
+15              0        0
+16              0        0
+17              0        0
+18              0        0
+19              0        0
+20              0        0
+21              0        0
+22              0        0
+23              1        0
+24              0        0
+25              0        0
+26              0        0
+27              0        0
+28              1        0
+29              0        0
+30              0        0
+31              0        0
+32              0        0
+33              1        0
+34              0        0
+35              0        0
+36              0        0
+37              0        0
+38              0        0
+39              0        0
+40              0        0
+41              0        0
+42              1        0
+43              1        0
+44              1        0
+45              0        0
+46              0        0
+47              0        0
+48              0        0
+49              0        0
+50              0        0
+51              1        0
+52              0        0
+53              0        0
+54              0        0
+55              0        0
+56              0        0
+57              0        0
+58              0        1
+59              0        0
+60              0        0
+61              0        0
+62              0        0
+63              0        0
+64              0        1
+65              0        1
+66              0        0
+67              0        0
+68              0        1
+69              0        0
+70              0        0
+71              0        0
+72              0        1
+73              0        0
+74              0        0
+75              0        0
+76              0        0
+77              0        0
+78              0        0
+79              0        0
+80              0        0
+81              0        0
+82              0        0
+83              0        0
+84              0        0
+85              0        0
+86              0        0
+87              0        1
+88              0        0
+89              0        1
+90              1        0
+91              1        0
+92              0        1
+93              0        1
+94              0        0
+95              0        0
+96              0        0
+97              0        1
+98              0        0
+99              0        0
+100             0        0
+101             0        0
+102             0        0
+103             0        0
+104             0        0
+105             0        0
+106             1        0
+107             0        0
+108             0        0
+109             0        0
+110             0        0
+111             0        0
+112             0        0
+113             0        0
+114             0        1
+115             0        0
+116             0        0
+117             0        0
+118             0        0
+119             0        0
+120             0        0
+121             0        0
+122             0        0
+123             0        0
+124             0        0
+125             0        0
+126             0        0
+127             0        0
+128             0        0
+129             0        0
+130             0        0
+131             0        0
+132             0        0
+133             0        0
+134             0        0
+135             0        0
+136             0        0
+137             0        0
+138             0        0
+139             0        0
+140             0        0
+141             0        0
+142             0        0
+143             0        0
+144             0        0
+145             0        0
+146             0        0
+147             0        0
+148             0        0
+149             0        0
+150             0        0
+151             0        0
+152             0        0
+153             0        0
+154             0        0
+155             0        0
+156             0        0
+157             0        0
+158             0        0
+159             0        0
+160             0        0
+161             0        0
+162             0        0
+163             0        0
+164             0        0
+165             0        0
+166             0        0
+167             0        0
+168             0        0
+169             0        0
+170             0        0
+171             0        0
+172             0        0
+173             0        0
+174             0        0
+175             0        0
+176             0        0
+177             0        0
+178             0        0
+179             0        0
+180             0        0
+181             0        0
+182             0        0
+183             0        0
+184             0        0
+185             0        0
+186             0        0
+187             0        0
+188             0        1
+189             0        0
+190             0        0
+191             0        0
+192             0        0
+193             0        0
+194             0        0
+195             0        0
+196             0        0
+197             0        0
+198             0        0
+199             0        0
+200             0        1
+201             0        0
+202             0        0
+203             0        0
+204             0        0
+205             0        0
+206             0        0
+207             1        1
+208             0        1
+209             0        1
+210             0        1
+211             0        1
+212             0        0
+213             0        0
+214             0        1
+215             0        1
+216             0        0
+217             0        0
+218             0        0
+219             0        1
+220             0        0
+221             0        0
+222             0        0
+223             0        0
+224             0        0
+225             0        0
+226             0        1
+227             0        1
+228             0        0
+229             0        1
+230             0        0
+231             0        1
+232             0        1
+233             0        1
+234             0        1
+235             0        1
+236             0        1
+237             0        0
+238             0        0
+239             0        0
+240             0        0
+241             0        0
+242             0        0
+243             0        0
+244             0        0
+245             0        0
+246             0        0
+247             0        0
+248             0        1
+249             0        1
+250             0        1
+251             0        1
+252             0        1
+253             0        1
+254             0        1
+255             0        1
+256             0        1
+257             0        1
+258             0        1
+259             0        1
+260             0        1
+261             0        1
+262             0        0
+263             0        0
+264             0        0
+265             0        1
+266             0        0
+
+Naive Bayes Classifier for Discrete Predictors
+
+Call:
+naiveBayes.default(x = thisIterationTrainingModel, y = thisIterationTrainingLabels, 
+    laplace = 0)
+
+A-priori probabilities:
+thisIterationTrainingLabels
+ GOODWARE   MALWARE 
+0.7443609 0.2556391 
+
+Conditional probabilities:
+                           BATTERY_STATS
+thisIterationTrainingLabels       [,1]      [,2]
+                   GOODWARE 0.06060606 0.2392111
+                   MALWARE  0.01470588 0.1212678
+
+                           READ_SMS
+thisIterationTrainingLabels       [,1]      [,2]
+                   GOODWARE 0.06060606 0.2392111
+                   MALWARE  0.48529412 0.5034996
+
+[1] "Results: Confusion Matrix"
+                testing_set_labels
+bayesResultModel  GOODWARE  MALWARE
+        GOODWARE        85       25
+        MALWARE          0        0
+[1] "This iteration model accuracy"
+[1] 0.7727273
+[1] "Previous iteration model accuracy"
+[1] 0.7727273
+[1] "Is better model than previous one?"
+[1] FALSE
+[1] "Unused column list for next iteration"
+[1] 8
+[1] "################################################"
+[1] "               FIN DEL PROYECTO"
+[1] "################################################"
