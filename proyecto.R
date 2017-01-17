@@ -7,17 +7,12 @@ removeCols = function(x) {
 }
 
 #Esta funcion genera un indice de columna aleatorio que no haya sido descartado anteriormente
-getRandomAttributeIndex = function(totalColNumber, unusedColumnList) {
+getRandomAttributeIndex = function(totalColNumber, previousColumn) {
   randomIndexAlreadyDiscard = TRUE
   randomIndex = -1
-  while(randomIndexAlreadyDiscard){
-    if(totalColNumber<=58)
-      randomIndex = sample(1:totalColNumber, 1)
-    else
-      randomIndex = sample(1:58, 1)
-    randomIndexAlreadyDiscard = is.element(randomIndex, unusedColumnList)
-  }
-  return(randomIndex)
+  if(previousColumn<totalColNumber)
+    return(previousColumn+1)
+  return(0)
 }
 
 generateMultipleColumnsDataFrame = function(sourceDataFrame, columnList){
@@ -99,6 +94,7 @@ previousIterationModelScore = -1
 currentIteration = 0
 
 bayesResultModel = NaN
+previous = 0
 while(keepImprovingModel){
   # establecer el numero de la iteracion actual
   currentIteration = currentIteration + 1
@@ -160,7 +156,7 @@ while(keepImprovingModel){
     
     model = train(
       thisIterationTrainingModel, #x: feature
-      thisIterationTrainingLabels,#y: class
+      thisIterationTrainingLabels,#y: classselectedColumnsList
       "nb",
       trControl=trainControl(
         method="cv",number=10
@@ -174,7 +170,7 @@ while(keepImprovingModel){
       thisIterationTrainingModel #x: test features
     )
 
-    datosColumnasTestSeleccionada = generateMultipleColumnsDataFrame(testing_data_set, selectedColumnsList)
+    datosColumnasTestSeleccionada = generateMultipleColumnsDataFrame(testing_data_set, previous)
 
     table =table(
       predictionResult$class,
@@ -208,7 +204,7 @@ while(keepImprovingModel){
       
       # Se elige una columna de manera aleatoria para la siguiente posible iteracion
       # 1. obtener el numero de la columna aleatoria (obtener un atributo aleatorio)
-      idxColumnaAleatoria = getRandomAttributeIndex(usefulColumnCount, unusedColumnList)
+      idxColumnaAleatoria = getRandomAttributeIndex(usefulColumnCount, previous)
 
       # 1.0 Mostrar el indice seleccionado. debug
       print(idxColumnaAleatoria)
