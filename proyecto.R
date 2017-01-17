@@ -1,7 +1,41 @@
 rm(list = ls())
 
+#remove cols
+removeCols = function(x) {
+  sum = sum(x)
+  return(sum>5)
+}
+
+#Esta funcion genera un indice de columna aleatorio que no haya sido descartado anteriormente
+getRandomAttributeIndex = function(totalColNumber, unusedColumnList) {
+  randomIndexAlreadyDiscard = TRUE
+  randomIndex = -1
+  while(randomIndexAlreadyDiscard){
+    if(totalColNumber<=58)
+      randomIndex = sample(1:totalColNumber, 1)
+    else
+      randomIndex = sample(1:58, 1)
+    randomIndexAlreadyDiscard = is.element(randomIndex, unusedColumnList)
+  }
+  return(randomIndex)
+}
+
+generateMultipleColumnsDataFrame = function(sourceDataFrame, columnList){
+  print("Generating multiple columns dataframe for training...")
+  newDataFrame = NaN
+  if(length(selectedColumnsList)>0){
+    newDataFrame = sourceDataFrame[columnList]
+  }
+  else{
+    newDataFrame = NULL
+  }
+  return(newDataFrame)
+}
+
 library('class')
 library('e1071')
+
+library("caret")
 
 print("################################################")
 print("              INICIO DEL PROYECTO")
@@ -15,19 +49,38 @@ data = read.csv("features_all_train.csv")
 testData = read.csv("features_all_test.csv")
 
 totalColNumber = ncol(data)
+usefulColumnCount = totalColNumber-1
+
 lastDataColumn = totalColNumber-1
 
 training_data_set = data[, c(1:lastDataColumn)]
+
+#eliminar las columnas con todo 0
+applyToColumns = 2
+before = ncol(training_data_set)
+demo = training_data_set[,apply(training_data_set, applyToColumns, removeCols), drop=TRUE]
+usefulColumnCount = ncol(demo)
+training_data_set = demo[, c(1:usefulColumnCount)]
+
+print("Columnas filtradas que no son nulas:")
+print(usefulColumnCount)
+
+#labels que contiene las clases
 training_set_labels =  data[, c(totalColNumber:totalColNumber)]
+testing_set_labels =  testData[, c(totalColNumber:totalColNumber)]
 
 testing_data_set = testData[, c(1:lastDataColumn)]
-testing_set_labels =  testData[, c(totalColNumber:totalColNumber)]
+#eliminar las columnas con todo a 0
+before = ncol(testing_data_set)
+#demo = testing_data_set[,apply(testing_data_set, applyToColumns, removeCols), drop=TRUE]
+#usefulColumnCount = ncol(demo)
+#testing_data_set = demo[, c(1:usefulColumnCount)]
 
 #fases del proyecto
 #hacer n iteraciones hasta que el modelo generado no mejore. En cada iteracion se realiza lo siguiente
 '
   1. se obtiene un numero aleatorio que representa una columna (atributo) del dataset.
-  2. La columna seleccionada, se añade al modelo y se entrena. EL modelo en caso de estar vacio, será es columna solamente.
+  2. La columna seleccionada, se añade al modelo y se entrena. El modelo en caso de estar vacio, será esa columna solamente.
   3. Se entrena el modelo compuesto por K columnas.
   4. Se obtiene el indice de acierto del modelo y se compara con el indice de acierto del anterio modelo. En caso de ser el primer modelo que se genere,
     El indice de acierto anterior será - 1.
@@ -35,30 +88,6 @@ testing_set_labels =  testData[, c(totalColNumber:totalColNumber)]
     De lo contrario, la columna seleccionada, no se añade como atributo y se descarta como seleccion para futuras iteraciones
   5 .Repetir este proceso hasta que el modelo predictivo no mejore.
 '
-
-#Esta funcion genera un indice de columna aleatorio que no haya sido descartado anteriormente
-getRandomAttributeIndex = function(totalColNumber, unusedColumnList) {
-  randomIndexAlreadyDiscard = TRUE
-  randomIndex = -1
-  while(randomIndexAlreadyDiscard){
-    randomIndex = sample(1:totalColNumber, 1)
-    randomIndexAlreadyDiscard = is.element(randomIndex, unusedColumnList)
-  }
-  return(randomIndex)
-}
-
-generateMultipleColumnsDataFrame = function(sourceDataFrame, columnList){
-  #TODO añadir un poquito de magia aqui!
-  print("Generating multiple columns dataframe for training...")
-  newDataFrame = NaN
-  if(length(selectedColumnsList)>0){
-    newDataFrame = sourceDataFrame[columnList]
-  }
-  else{
-    newDataFrame = NULL
-  }
-  return(newDataFrame)
-}
 
 selectedColumnsList = c()
 selectedColumnsListIdx = 1
@@ -85,9 +114,10 @@ while(keepImprovingModel){
   datosColumnaSeleccionada = generateMultipleColumnsDataFrame(training_data_set, selectedColumnsList)
   
   # 1.2 se hace un print para comprobar que son correctos. debug
-  print(datosColumnaSeleccionada)
+  #print(datosColumnaSeleccionada)
 
   thisIterationTrainingLabels = training_set_labels
+  thisIterationTestingLabels = testing_set_labels
 
   # 2. Añadir la columna seleccionada al modelo
   thisIterationTrainingModel = datosColumnaSeleccionada
@@ -96,29 +126,72 @@ while(keepImprovingModel){
   # Se genera el modelo solamente si hay datos. De lo contrario, la function naiveBayes da error
   if(length(selectedColumnsList)>0){
     # generar el modelo de bayes con los atributos seleccionados aleatoriamente
+    print("Ready to train...")
+
     bayes = naiveBayes(
             thisIterationTrainingModel,
             thisIterationTrainingLabels,
-            laplace = 0
+            laplace = 1
           )
 
+'
     # impribir el resultado del modelo. debug
     print(bayes)
 
     bayesResultModel = predict(
       bayes,
-      testing_set_labels,
+      thisIterationTestingLabels,
       type="class"
     )
+    print("Test data:")
+    print(thisIterationTestingLabels)
+
+    print("Prediction data:")
+    print(bayesResultModel)
 
     # form and display confusion matrix & overall accuracy
-    tab <- table(bayesResultModel, testing_set_labels)
+    tab <- table(bayesResultModel, thisIterationTestingLabels)
     print("Results: Confusion Matrix") 
     print(tab)
     thisIterationModelScore = sum(tab[row(tab)==col(tab)])/sum(tab)
     print("This iteration model accuracy")
     print(thisIterationModelScore)
+    '
+    
+    model = train(
+      thisIterationTrainingModel, #x: feature
+      thisIterationTrainingLabels,#y: class
+      "nb",
+      trControl=trainControl(
+        method="cv",number=10
+      )
+    ) #cross validation n=10
 
+    print(model)
+
+    predictionResult = predict(
+      model$finalModel,
+      thisIterationTrainingModel #x: test features
+    )
+
+    datosColumnasTestSeleccionada = generateMultipleColumnsDataFrame(testing_data_set, selectedColumnsList)
+
+    table =table(
+      predictionResult$class,
+      thisIterationTrainingLabels
+    )
+
+    print("NAIVE BAYES PREDICTION:")
+    print(table)
+    thisIterationModelScore = sum(table[row(table)==col(table)])/sum(table)
+    print("This iteration model accuracy")
+    print(thisIterationModelScore)
+    #plot prediction
+    naivePlot <- NaiveBayes(thisIterationTrainingLabels ~ ., data = thisIterationTrainingModel)
+    plot(naivePlot)
+    
+    #thisIterationModelScore = -1
+    
     print("Previous iteration model accuracy")
     print(previousIterationModelScore)
 
@@ -135,7 +208,7 @@ while(keepImprovingModel){
       
       # Se elige una columna de manera aleatoria para la siguiente posible iteracion
       # 1. obtener el numero de la columna aleatoria (obtener un atributo aleatorio)
-      idxColumnaAleatoria = getRandomAttributeIndex(totalColNumber, unusedColumnList)
+      idxColumnaAleatoria = getRandomAttributeIndex(usefulColumnCount, unusedColumnList)
 
       # 1.0 Mostrar el indice seleccionado. debug
       print(idxColumnaAleatoria)
